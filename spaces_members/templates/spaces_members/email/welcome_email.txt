@@ -1,0 +1,24 @@
+{% load i18n space_tags %}
+{% autoescape off %}
+
+{% if user_message %}
+{{ user_message }}
+--------
+{% endif %}
+
+{% blocktrans %}
+You're receiving this e-mail because someone created an account for you at {{ site_name }}.
+
+To access the groupware, please choose a password first by visiting this link:
+{% endblocktrans %}
+{% block reset_link %}
+   https://{{ domain }}{% space_url space 'password_reset_confirm' uidb64=uid token=token %}
+{% endblock %}
+{% blocktrans %}
+Your username: {{ username }}
+
+Looking forward to seeing you on the site!
+
+The {{ site_name }} team.
+{% endblocktrans %}
+{% endautoescape %}

@@ -1,0 +1,18 @@
+{% load sekizai_tags %}
+{% csrf_token %}
+
+{% include "spaces_members/includes/formerrors.html" %}
+
+{% addtoblock "js" %}
+{{ form.media.js }}
+{% endaddtoblock %}
+
+{% addtoblock "css" %}
+{{ form.media.css }}
+{% endaddtoblock %}
+
+{% for field in form %}
+
+  {% include "spaces_members/includes/formfield.html" %}
+
+{% endfor %}

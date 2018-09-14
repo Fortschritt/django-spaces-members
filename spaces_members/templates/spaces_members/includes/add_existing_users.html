@@ -1,0 +1,18 @@
+{% load collab_tags i18n sekizai_tags staticfiles %}
+
+
+{% addtoblock "css" %}
+{% endaddtoblock %}
+{% if user|is_admin_or_manager:space %}
+<h4 class="panel-title"><span class="icon icon-login"></span> {% trans "Add exisiting user" %}</h4>
+<p></p>
+<form action="{% url 'spaces_members:search' keyword='_' %}" method="get" id="searchUserForm">
+{% csrf_token %}
+<input type="text" id="searchUser" name="searchUser" autocomplete="off" class="form-control" placeholder="{% trans 'Search user database' %}">
+</form>
+<p class="" id="searchUserMenu" data-adduser-url="{% url 'spaces_members:add' %}">
+</p>
+{% endif %}
+{% addtoblock "js" %}
+<script src="{% static 'spaces_members/js/searchUser.js' %}"></script>
+{% endaddtoblock %}

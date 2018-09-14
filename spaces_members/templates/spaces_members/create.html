@@ -1,0 +1,18 @@
+{% extends 'spaces_members/base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+<div class="col-md-10 col-lg-6 col-xl-6 col-md-offset-1 col-lg-offset-3 col-xl-offset-3">
+<div class="panel panel-default">
+<div class="panel-body">
+<form method="post">
+	{% include "spaces_members/includes/form.html" %}
+	<div class="clearfix m-t-md"></div>
+	<button type="submit" class="btn btn-primary"><span class="icon icon-add-user"></span> {% trans 'Create User' %}</button>
+	
+</form>
+</div>
+</div>
+</div>
+{% endblock %}

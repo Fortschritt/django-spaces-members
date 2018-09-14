@@ -1,0 +1,115 @@
+{% extends 'spaces_members/base.html' %}
+
+{% load i18n collab_tags space_tags staticfiles sekizai_tags %}
+
+
+{% block content %}
+
+<div class="col-md-9">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h2>{% trans 'Members of this Space' %}</h2>
+
+{% for member in members %}
+<div class="col-lg-4 col-md-6">
+  <div class="panel panel-default panel-profile">
+    <div class="panel-heading"></div>
+    <div class="panel-body text-center">
+{#        <img class="panel-profile-img" src="{% static member.profile.avatar %}">#}
+		<div class="panel-profile-img" style="background: url({% static member.profile.avatar %});"></div>
+        <h5 class="panel-title">
+		  <a href="{% url 'collab_profile:detail' member.pk %}">
+			{% if member.get_full_name %}{{ member.get_full_name }}{% else %}{{ member }}{% endif %}
+		  </a>
+		</h5>
+        <p class="m-b-md">
+		{% if member|is_team:space %}
+		  <span class="label label-info m-r">
+		  <span class="icon icon-blackboard"></span> {% trans 'Team' %}
+		  </span>
+		{% endif %}
+		{% if member|has_admin_role:space %}
+		  <span class="label label-warning">
+		  <span class="icon icon-sound-mix"></span> {% trans 'Admin' %}
+		  </span>
+		{% endif %}
+		{% if not member|is_team:space and not member|has_admin_role:space %}
+		  <span class="label label-invisible"><span class="icon icon-user"></span> </span>{# hack for equal height of all profiles #}
+		{% endif %}
+		</p>
+		{% if user|is_admin_or_manager:space %}
+		<div class="config-slider-outer">
+		<div class="collapse panel panel-default config-slider-inner" id="manageRoles{{member.pk}}" >
+		<h4 class="panel-title" >{% if member.get_full_name %}{{ member.get_full_name }}{% else %}{{ member }}{% endif %}</h4>
+		<div class="panel-body">
+			{% if member|is_team:space %}
+			<form action="{% url 'spaces_members:remove_role' %}" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="user_pk" value="{{member.pk}}">
+				<input type="hidden" name="role" value="team">
+				<button type="submit" class="btn btn-default"><span class="icon icon-block"></span> {% trans 'Remove from Team' %}</button>
+			</form>
+			{% else %}
+			<form action="{% url 'spaces_members:add_role' %}" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="user_pk" value="{{member.pk}}">
+				<input type="hidden" name="role" value="team">
+				<button type="submit" class="btn btn-default"><span class="icon icon-blackboard"></span> {% trans 'Promote to Team' %}</button>
+			</form>
+			{% endif %}
+			{% if member|has_admin_role:space %}
+			<form action="{% url 'spaces_members:remove_role' %}" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="user_pk" value="{{member.pk}}">
+				<input type="hidden" name="role" value="admin">
+				<button type="submit" class="btn btn-default"><span class="icon icon-block"></span> {% trans 'Remove from Admin' %}</button>
+			</form>
+			{% else %}
+			<form action="{% url 'spaces_members:add_role' %}" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="user_pk" value="{{member.pk}}">
+				<input type="hidden" name="role" value="admin">
+				<button type="submit" class="btn btn-default"><span class="icon icon-sound-mix"> {% trans 'Promote to Admin' %}</button>
+			</form>
+			{% endif %}
+			<a class="btn btn-default" href="{% url 'spaces_members:remove' member.pk %}">
+				<span class="icon icon-remove-user"></span>
+				{% trans 'Remove from group' %}
+			</a>
+		</div>
+		</div>
+		</div>
+
+		<a class="btn btn-primary-outline btn-sm" data-toggle="collapse" href="#manageRoles{{member.pk}}" aria-expanded="false" aria-controls="manageRoles{{member.pk}}">
+		<span class="icon icon-cog"> {% trans "Manage" %}
+	    </a>
+		{% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+    </div>
+  </div>
+</div>
+
+{% if user|is_admin_or_manager:space %}
+<div class="col-md-3">
+  <div class="panel panel-default">
+	<div class="panel-body">
+	<a href="{% url 'spaces_members:create' %}" class="btn btn-default btn-lg">
+	  <span class="icon icon-add-user"></span>
+		{% trans "Create account" %}
+	</a>
+	</div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+	  {% include 'spaces_members/includes/add_existing_users.html' %}
+	</div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock content %}
+
