@@ -2,7 +2,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.forms.fields import CharField
 from django.http import HttpResponse, JsonResponse

@@ -3,8 +3,7 @@ from spaces.urls import space_patterns
 from .views import Index, CreateUser, AjaxUserSearch, AjaxUserAdd, NotReallyDelete, AddRole, RemoveRole
 
 app_name = 'spaces_members'
-urlpatterns = space_patterns(
-
+urlpatterns = (
     url(r'^members/$', Index.as_view(), name='index'),
     url(r'^members/create/$', CreateUser.as_view(), name='create'),
     url(r'^members/search/(?P<keyword>[_\-0-9A-Za-z]+)/$',
