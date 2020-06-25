@@ -54,6 +54,36 @@ class CreateUser(ContextMixin, SpaceAdminRequiredMixin, FormView):
         kwargs['request'] = self.request
         return kwargs
 
+    def _add_user(self, form):
+        email = form.data["email1"]
+        user = User.objects.get(email=email)
+        member_group = self.request.SPACE.get_members()
+        user.groups.add(member_group)
+        actstream_action.send(
+            sender=self.request.user,
+            verb=_("has been added to group"),
+            target=self.request.SPACE,
+            action_object=user
+        )
+        if "is_team" in form.data.keys():
+            team = self.request.SPACE.get_team()
+            user.groups.add(team)
+        if "is_admin" in form.data.keys():
+            admins = self.request.SPACE.get_admins()
+            user.groups.add(admins)
+ 
+
+    def form_invalid(self, form):
+        # For better UX, intercept the edge case of the admin trying to
+        # invite a user who is already on the platform, manually
+        # add this user to the group and return with a success message:
+        if len(form.errors.keys()) == 1 and ("email2" in form.errors.keys()):
+            if form.errors["email2"].as_data()[0].code == "email_exists":
+                self._add_user(form)
+                return redirect(self.get_success_url())
+
+        return super().form_invalid(form)
+
     def form_valid(self, form):
         new_user = form.save()
         actstream_action.send(
