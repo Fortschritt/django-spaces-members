@@ -15,8 +15,8 @@
   <div class="panel panel-default panel-profile">
     <div class="panel-heading"></div>
     <div class="panel-body text-center">
-{#        <img class="panel-profile-img" src="{% static member.profile.avatar %}">#}
-		<div class="panel-profile-img" style="background: url({% static member.profile.avatar %});"></div>
+		<div class="panel-profile-img" style="background: url({{ member.profile.avatar }});"></div>
+
         <h5 class="panel-title">
 		  <a href="{% url 'collab_profile:detail' member.pk %}">
 			{% if member.get_full_name %}{{ member.get_full_name }}{% else %}{{ member }}{% endif %}
