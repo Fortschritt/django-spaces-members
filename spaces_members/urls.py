@@ -6,7 +6,7 @@ app_name = 'spaces_members'
 urlpatterns = (
     url(r'^members/$', Index.as_view(), name='index'),
     url(r'^members/create/$', CreateUser.as_view(), name='create'),
-    url(r'^members/search/(?P<keyword>[_\-0-9A-Za-z]+)/$',
+    url(r'^members/search/(?P<keyword>[_\-0-9A-Za-z ]+)/$',
         AjaxUserSearch.as_view(), name='search'),
     url(r'^members/add/$', AjaxUserAdd.as_view(), name='add'),
     url(r'^members/remove/(?P<user_pk>[-\w]+)/$', NotReallyDelete.as_view(), name='remove'),

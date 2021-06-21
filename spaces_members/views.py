@@ -126,6 +126,15 @@ class AjaxUserSearch(SpaceAdminRequiredMixin, ListView):
             Q(last_name__icontains=self.keyword) |
             Q(email__icontains=self.keyword) 
         )
+        # allow users to search for "firstname whitespace lastname")
+        print("self.keyword:", self.keyword)
+        if " " in self.keyword:
+            split_keywords = self.keyword.split(" ")
+            qs_split = self.model.objects.filter(
+                Q(first_name__icontains=split_keywords[0]) &
+                Q(last_name__icontains=split_keywords[1]) 
+            )
+            qs = qs | qs_split
         # exclude anonymous user
         qs = qs.exclude(id__lt=1) 
         # exclude existing members
